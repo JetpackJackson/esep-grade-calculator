@@ -2,16 +2,16 @@
 
 This library is a simple utility to calculate your grades.
 
-Runtime requirements:
-Golang 1.24+
+Runtime dependencies:
+- Golang 1.24+
 
-Run unit tests:
+Run unit tests for all packages:
 ```
 cd grade_calculator/
 go test ./...
 ```
 
-Run unit tests with code coverage:
+Run unit tests for all packages with code coverage (generated after run):
 ```
 cd grade_calculator/
 go test -coverprofile=coverage.txt ./...
