@@ -3,9 +3,7 @@ package esepunittests
 import "errors"
 
 type GradeCalculator struct {
-	assignments []Grade
-	exams       []Grade
-	essays      []Grade
+	submissions []Grade
 }
 
 type GradeType int
@@ -34,9 +32,7 @@ type Grade struct {
 
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
-		assignments: make([]Grade, 0),
-		exams:       make([]Grade, 0),
-		essays:      make([]Grade, 0),
+		submissions: make([]Grade, 0),
 	}
 }
 
@@ -56,25 +52,14 @@ func (gc *GradeCalculator) GetFinalGrade() string {
 }
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) error {
+	g := Grade{name, grade, gradeType}
 	switch gradeType {
 	case Assignment:
-		gc.assignments = append(gc.assignments, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Assignment,
-		})
+		gc.submissions = append(gc.submissions, g)
 	case Exam:
-		gc.exams = append(gc.exams, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Exam,
-		})
+		gc.submissions = append(gc.submissions, g)
 	case Essay:
-		gc.essays = append(gc.essays, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Essay,
-		})
+		gc.submissions = append(gc.submissions, g)
 	default:
 		return errors.New("Invalid grade type")
 	}
@@ -82,9 +67,22 @@ func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType)
 }
 
 func (gc *GradeCalculator) calculateNumericalGrade() int {
-	assignment_average, _ := computeAverage(gc.assignments)
-	exam_average, _ := computeAverage(gc.exams)
-	essay_average, _ := computeAverage(gc.essays)
+	list_assign := []Grade{}
+	list_exam := []Grade{}
+	list_essay := []Grade{}
+	for _, task := range gc.submissions {
+		switch task.Type {
+		case Assignment:
+			list_assign = append(list_assign, task)
+		case Exam:
+			list_exam = append(list_exam, task)
+		case Essay:
+			list_essay = append(list_essay, task)
+		}
+	}
+	assignment_average, _ := computeAverage(list_assign)
+	exam_average, _ := computeAverage(list_exam)
+	essay_average, _ := computeAverage(list_essay)
 
 	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
 
